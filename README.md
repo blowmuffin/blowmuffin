@@ -1,4 +1,4 @@
-# 💫 About Me:
+<p align=center><img src="[https://user-images.githubusercontent.com/74038190/238353480-219bcc70-f5dc-466b-9a60-29653d8e8433.gif](https://github.com/mhardik003/mhardik003)" width=50%></p># 💫 About Me:
 Hi, I’m Ayush Kasare — a tech-focused builder passionate about AI, distributed systems, and security.<br><br>I work on real-world projects in full-stack development, data analytics, and automation. Currently building AI-driven tools, experimenting with system design, and exploring how technology can solve meaningful problems.<br><br>Always learning. Always shipping.
 
 
