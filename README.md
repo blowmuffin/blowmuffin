@@ -18,7 +18,7 @@
   <img 
     src="https://raw.githubusercontent.com/blowmuffin/blowmuffin/output/github-snake-dark.svg" 
     alt="Snake animation" 
-    width="80%"
+    width="90%"
   />
 </div>
 <div align="center">
