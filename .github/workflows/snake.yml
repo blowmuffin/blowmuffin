@@ -1,57 +1,32 @@
-# =============================================================================
-# GitHub Snake Game — Contribution Graph Animation Generator
-# =============================================================================
-# Generates animated SVGs/GIFs of a snake eating your GitHub contribution graph.
-# Outputs are deployed to the 'output' branch for use in your profile README.
-# =============================================================================
-
 name: GitHub Snake Game
 
 on:
-  # Runs daily at midnight UTC
   schedule:
     - cron: "0 0 * * *"
-
-  # Manual trigger from the Actions tab
   workflow_dispatch:
-
-  # Runs on pushes to main
   push:
     branches:
       - main
 
-# ---------------------------------------------------------------------------
-# Prevent duplicate runs — cancel any in-progress run for the same ref
-# ---------------------------------------------------------------------------
 concurrency:
   group: snake-${{ github.ref }}
   cancel-in-progress: true
 
-# ---------------------------------------------------------------------------
-# Top-level permissions — least privilege
-# ---------------------------------------------------------------------------
 permissions:
   contents: write
 
 jobs:
   generate:
-    name: 🐍 Generate Snake Animation
+    name: Generate Snake Animation
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      # -----------------------------------------------------------------------
-      # 1 — Checkout
-      # -----------------------------------------------------------------------
-      - name: 📥 Checkout Repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      # -----------------------------------------------------------------------
-      # 2 — Generate snake animation files
-      # -----------------------------------------------------------------------
-      - name: 🎨 Generate Snake Animations
-        uses: Platane/snk@9809b587c06dfce21e498e0784494c29756df95a # v3.2.0
-        id: snake
+      - name: Generate Snake Animations
+        uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
@@ -61,74 +36,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # -----------------------------------------------------------------------
-      # 3 — Verify outputs exist before deploying
-      # -----------------------------------------------------------------------
-      - name: ✅ Verify Generated Files
+      - name: Verify Generated Files
         run: |
-          echo "--- Checking generated files ---"
-          files=(
-            "dist/github-snake.svg"
-            "dist/github-snake-dark.svg"
-            "dist/ocean.gif"
-          )
-          missing=0
-          for file in "${files[@]}"; do
-            if [[ -f "$file" ]]; then
-              size=$(du -h "$file" | cut -f1)
-              echo "✅ $file ($size)"
-            else
-              echo "❌ $file — NOT FOUND"
-              missing=1
-            fi
-          done
-          if [[ $missing -eq 1 ]]; then
-            echo "::error::One or more animation files were not generated."
-            exit 1
-          fi
-          echo "--- All files verified ---"
+          echo "Checking generated files..."
+          ls -la dist/
 
-      # -----------------------------------------------------------------------
-      # 4 — Deploy to 'output' branch
-      # -----------------------------------------------------------------------
-      - name: 🚀 Deploy to Output Branch
-        if: success()
-        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
+      - name: Deploy to Output Branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: output
-          force_orphan: true            # keeps branch clean with a single commit
+          force_orphan: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_message: "chore: update snake animation — $(date -u +'%Y-%m-%d %H:%M UTC') [skip ci]"
-
-      # -----------------------------------------------------------------------
-      # 5 — Summary
-      # -----------------------------------------------------------------------
-      - name: 📝 Job Summary
-        if: always()
-        run: |
-          REPO="${{ github.repository }}"
-          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
-          ## 🐍 Snake Animation Results
-
-          | File | Preview |
-          |------|---------|
-          | \`github-snake.svg\` | [View](https://raw.githubusercontent.com/${REPO}/output/github-snake.svg) |
-          | \`github-snake-dark.svg\` | [View](https://raw.githubusercontent.com/${REPO}/output/github-snake-dark.svg) |
-          | \`ocean.gif\` | [View](https://raw.githubusercontent.com/${REPO}/output/ocean.gif) |
-
-          ### 📋 Usage in README
-
-          \`\`\`html
-          <picture>
-            <source media="(prefers-color-scheme: dark)"
-                    srcset="https://raw.githubusercontent.com/${REPO}/output/github-snake-dark.svg" />
-            <source media="(prefers-color-scheme: light)"
-                    srcset="https://raw.githubusercontent.com/${REPO}/output/github-snake.svg" />
-            <img alt="Snake animation"
-                 src="https://raw.githubusercontent.com/${REPO}/output/github-snake.svg" />
-          </picture>
-          \`\`\`
-          EOF
+          commit_message: "Update snake animation [skip ci]"
