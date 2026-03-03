@@ -44,13 +44,13 @@ jobs:
       # 1 — Checkout
       # -----------------------------------------------------------------------
       - name: 📥 Checkout Repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@v4
 
       # -----------------------------------------------------------------------
       # 2 — Generate snake animation files
       # -----------------------------------------------------------------------
       - name: 🎨 Generate Snake Animations
-        uses: Platane/snk@9809b587c06dfce21e498e0784494c29756df95a # v3.2.0
+        uses: Platane/snk@v3
         id: snake
         with:
           github_user_name: ${{ github.repository_owner }}
@@ -93,12 +93,12 @@ jobs:
       # -----------------------------------------------------------------------
       - name: 🚀 Deploy to Output Branch
         if: success()
-        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: output
-          force_orphan: true            # keeps branch clean with a single commit
+          force_orphan: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
           commit_message: "chore: update snake animation — $(date -u +'%Y-%m-%d %H:%M UTC') [skip ci]"
