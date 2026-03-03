@@ -1,5 +1,5 @@
 <p align="center">
-      <img alt="GIF" src="https://raw.githubusercontent.com/workspaces/blowmuffin/gif/github_profile.gif">
+      <img alt="GIF" src="https://raw.githubusercontent.com/blowmuffin/blowmuffin/gif/github_profile.gif">
 </p>
 ## 💫 About Me:
 Hi, I’m Ayush Kasare — a tech-focused builder passionate about AI, distributed systems, and security.<br><br>I work on real-world projects in full-stack development, data analytics, and automation. Currently building AI-driven tools, experimenting with system design, and exploring how technology can solve meaningful problems.<br><br>Always learning. Always shipping.
