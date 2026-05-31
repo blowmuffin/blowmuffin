@@ -1,0 +1,60 @@
+name: Render LinkedIn Badge
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/render-linkedin-badge.mjs
+      - .github/workflows/linkedin-badge.yml
+
+concurrency:
+  group: linkedin-badge-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    name: Render LinkedIn Badge
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Render Badge Images
+        run: node scripts/render-linkedin-badge.mjs
+
+      - name: Verify Generated Files
+        run: |
+          echo "Checking generated files..."
+          ls -la dist-badges/
+          test -s dist-badges/linkedin-light.png || (echo "Missing linkedin-light.png" && exit 1)
+          test -s dist-badges/linkedin-dark.png  || (echo "Missing linkedin-dark.png" && exit 1)
+
+      - name: Deploy to Badges Branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist-badges
+          publish_branch: badges
+          force_orphan: true
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: "Update LinkedIn badge images [skip ci]"

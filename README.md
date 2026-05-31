@@ -36,7 +36,13 @@
 ---
 [![](https://visitcount.itsvg.in/api?id=blowmuffin&icon=0&color=0)](https://visitcount.itsvg.in)
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/ayushkasare)
 [![GitRoll Profile Badge](https://gitroll.io/api/badges/profiles/v1/uvKFX8wTpQ6MI9uE4C8bnUwD1ZSk1?theme=dark)](https://gitroll.io/profile/uvKFX8wTpQ6MI9uE4C8bnUwD1ZSk1)
+
+<a href="https://in.linkedin.com/in/ayushkasare?trk=profile-badge">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/blowmuffin/blowmuffin/badges/linkedin-dark.png">
+    <img alt="Ayush Kasare — LinkedIn" src="https://raw.githubusercontent.com/blowmuffin/blowmuffin/badges/linkedin-light.png">
+  </picture>
+</a>
 
 </div>
