@@ -1,5 +1,6 @@
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
+import { createServer } from "node:http";
 
 const VANITY = "ayushkasare";
 const PROFILE_URL = `https://in.linkedin.com/in/${VANITY}?trk=profile-badge`;
@@ -20,17 +21,45 @@ function badgeHtml(theme) {
 </html>`;
 }
 
+// LinkedIn's profile.js only runs from a real HTTP origin (not about:blank),
+// so serve the badge HTML from a local server and navigate to it.
+const server = createServer((req, res) => {
+  const theme = new URL(req.url, "http://localhost").searchParams.get("theme") || "light";
+  res.writeHead(200, { "Content-Type": "text/html" });
+  res.end(badgeHtml(theme));
+});
+
+await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+const port = server.address().port;
+const baseUrl = `http://127.0.0.1:${port}`;
+
 async function render(browser, theme) {
   const page = await browser.newPage({ viewport: { width: 600, height: 600 } });
   try {
-    await page.setContent(badgeHtml(theme), { waitUntil: "networkidle" });
-    // The loader script replaces the div with a LinkedIn-hosted iframe.
-    const frame = await page.waitForSelector(".badge-base iframe", { timeout: 30000 });
+    await page.goto(`${baseUrl}/?theme=${theme}`, { waitUntil: "networkidle" });
+
+    // profile.js replaces the div's contents with a LinkedIn-hosted iframe.
+    // Prefer screenshotting the iframe; fall back to the badge container.
+    let target;
+    try {
+      target = await page.waitForSelector(".badge-base iframe", { timeout: 30000, state: "visible" });
+    } catch {
+      console.warn(`[${theme}] iframe not found; falling back to .badge-base container`);
+      target = await page.waitForSelector(".badge-base", { timeout: 5000, state: "visible" });
+    }
+
     // Give the cross-origin iframe time to fetch and paint its content.
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(5000);
+
+    const box = await target.boundingBox();
+    if (!box || box.width < 10 || box.height < 10) {
+      const html = await page.content();
+      throw new Error(`[${theme}] badge did not render (box=${JSON.stringify(box)}). Page:\n${html.slice(0, 800)}`);
+    }
+
     const out = `${OUT_DIR}/linkedin-${theme}.png`;
-    await frame.screenshot({ path: out, omitBackground: true });
-    console.log(`Rendered ${theme} -> ${out}`);
+    await target.screenshot({ path: out, omitBackground: true });
+    console.log(`Rendered ${theme} -> ${out} (${Math.round(box.width)}x${Math.round(box.height)})`);
   } finally {
     await page.close();
   }
@@ -44,4 +73,5 @@ try {
   }
 } finally {
   await browser.close();
+  server.close();
 }
