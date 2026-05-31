@@ -23,10 +23,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Generate Snake Animations
-        uses: Platane/snk@v3
+        uses: Platane/snk@d8f6715049803e982ee5ff501b6b9b7d5deeb09b # v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
@@ -40,9 +40,12 @@ jobs:
         run: |
           echo "Checking generated files..."
           ls -la dist/
+          test -s dist/github-snake.svg      || (echo "Missing github-snake.svg" && exit 1)
+          test -s dist/github-snake-dark.svg || (echo "Missing github-snake-dark.svg" && exit 1)
+          test -s dist/ocean.gif             || (echo "Missing ocean.gif" && exit 1)
 
       - name: Deploy to Output Branch
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
