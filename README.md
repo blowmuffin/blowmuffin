@@ -38,11 +38,4 @@
 
 [![GitRoll Profile Badge](https://gitroll.io/api/badges/profiles/v1/uvKFX8wTpQ6MI9uE4C8bnUwD1ZSk1?theme=dark)](https://gitroll.io/profile/uvKFX8wTpQ6MI9uE4C8bnUwD1ZSk1)
 
-<a href="https://in.linkedin.com/in/ayushkasare?trk=profile-badge">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/blowmuffin/blowmuffin/badges/linkedin-dark.png">
-    <img alt="Ayush Kasare — LinkedIn" src="https://raw.githubusercontent.com/blowmuffin/blowmuffin/badges/linkedin-light.png">
-  </picture>
-</a>
-
 </div>
